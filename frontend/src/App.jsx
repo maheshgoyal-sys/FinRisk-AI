@@ -6,8 +6,13 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import LoanApplication from './pages/LoanApplication';
 import KycUpload from './pages/KycUpload';
+import EnhancedKyc from './pages/EnhancedKyc';
+import RiskDashboard from './pages/RiskDashboard';
 import Result from './pages/Result';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboardEnhanced from './pages/AdminDashboardEnhanced';
+import LoanCalculator from './pages/LoanCalculator';
+import AdminUserManagement from './pages/AdminUserManagement';
 import Navbar from './components/Navbar';
 import Chatbot from './components/Chatbot';
 import './index.css';
@@ -69,6 +74,30 @@ function App() {
               }
             />
             <Route
+              path="/kyc-enhanced"
+              element={
+                <ProtectedRoute>
+                  <EnhancedKyc />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/risk-dashboard"
+              element={
+                <ProtectedRoute>
+                  <RiskDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/calculator"
+              element={
+                <ProtectedRoute>
+                  <LoanCalculator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/result/:id"
               element={
                 <ProtectedRoute>
@@ -80,7 +109,15 @@ function App() {
               path="/admin"
               element={
                 <ProtectedRoute adminOnly>
-                  <AdminDashboard />
+                  <AdminUserManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/overview"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminDashboardEnhanced />
                 </ProtectedRoute>
               }
             />

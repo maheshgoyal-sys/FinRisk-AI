@@ -33,7 +33,12 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName());
         user.setPhone(request.getPhone());
-        user.setRole("USER");
+        // Allow role assignment if provided and valid (for admin creation)
+        String role = request.getRole();
+        if (role == null || (!role.equals("USER") && !role.equals("ADMIN"))) {
+            role = "USER";
+        }
+        user.setRole(role);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 

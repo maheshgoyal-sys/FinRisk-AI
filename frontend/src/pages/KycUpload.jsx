@@ -6,8 +6,8 @@ import api from '../services/api';
 const documentTypes = [
   { id: 'AADHAAR', label: 'Aadhaar Card', required: true },
   { id: 'PAN', label: 'PAN Card', required: true },
-  { id: 'SALARY', label: 'Salary Slip / Income Proof', required: true },
-  { id: 'BANK_STATEMENT', label: 'Bank Statement (Last 6 months)', required: true },
+  { id: 'ADDRESS', label: 'Address Proof', required: true },
+  { id: 'PHOTO', label: 'Profile Photo', required: true },
 ];
 
 export default function KycUpload() {

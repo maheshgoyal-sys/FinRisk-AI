@@ -2,7 +2,9 @@ package com.finrisk.service;
 
 import com.finrisk.dto.loan.LoanApplicationRequest;
 import com.finrisk.model.LoanApplication;
+import com.finrisk.model.User;
 import com.finrisk.repository.LoanApplicationRepository;
+import com.finrisk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +21,29 @@ import java.util.Map;
 public class LoanService {
 
     private final LoanApplicationRepository repository;
+    private final UserRepository userRepository;
     private final RestTemplate restTemplate;
 
     @Value("${ml.service.url}")
     private String mlServiceUrl;
 
     public LoanApplication predict(String userId, LoanApplicationRequest request) {
+        // Check KYC verification status
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        // Check if all 4 required documents are verified
+        boolean aadhaarVerified = "VERIFIED".equals(user.getAadhaarStatus());
+        boolean panVerified = "VERIFIED".equals(user.getPanStatus());
+        boolean addressVerified = "VERIFIED".equals(user.getAddressStatus());
+        boolean photoVerified = "VERIFIED".equals(user.getPhotoStatus());
+
+        if (!aadhaarVerified || !panVerified || !addressVerified || !photoVerified) {
+            throw new RuntimeException("KYC verification incomplete. Please upload and verify all documents (Aadhaar, PAN, Address, Photo) before applying for a loan.");
+        }
+
         double totalAssets = sumValues(request.getAssets());
         double totalLiabilities = sumValues(request.getLiabilities());
 

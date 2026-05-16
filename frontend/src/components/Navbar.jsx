@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { FaUser, FaSignOutAlt, FaHome, FaFileAlt, FaIdCard, FaCrown } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaHome, FaFileAlt, FaIdCard, FaCrown, FaChartLine, FaShieldAlt, FaCalculator } from 'react-icons/fa';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -17,7 +17,10 @@ export default function Navbar() {
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: FaHome },
     { path: '/apply', label: 'Apply', icon: FaFileAlt },
+    { path: '/calculator', label: 'Calculator', icon: FaCalculator },
     { path: '/kyc', label: 'KYC', icon: FaIdCard },
+    { path: '/kyc-enhanced', label: 'Verify', icon: FaShieldAlt },
+    { path: '/risk-dashboard', label: 'Risk', icon: FaChartLine },
   ];
 
   return (

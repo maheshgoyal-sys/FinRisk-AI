@@ -16,6 +16,7 @@ export default function Dashboard() {
     rejected: 0
   });
   const [loading, setLoading] = useState(true);
+  const [kycStatus, setKycStatus] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -32,6 +33,10 @@ export default function Dashboard() {
         pending: apps.filter(a => a.status === 'PENDING').length,
         rejected: apps.filter(a => a.status === 'REJECTED').length
       });
+
+      // Load KYC status
+      const kycRes = await api.get('/kyc/status');
+      setKycStatus(kycRes.data);
     } catch (error) {
       console.error('Error loading applications:', error);
     } finally {
@@ -255,16 +260,51 @@ export default function Dashboard() {
               <FaWallet className="text-amber-400" />
               <h3 className="text-lg font-semibold">Quick Actions</h3>
             </div>
-            <div className="space-y-3">
-              <Link
-                to="/apply"
-                className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-black font-semibold hover:shadow-lg hover:shadow-amber-500/20 transition-all group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <FaPlus className="text-lg" />
+
+            {/* KYC Status Banner */}
+            {kycStatus && (
+              <div className={`mb-4 p-3 rounded-lg ${
+                kycStatus.kycStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-warning/10 border border-warning/30'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {kycStatus.kycStatus === 'VERIFIED' ? (
+                      <FaCheck className="text-success" />
+                    ) : (
+                      <FaClock className="text-warning" />
+                    )}
+                    <span className={kycStatus.kycStatus === 'VERIFIED' ? 'text-success' : 'text-warning'}>
+                      KYC {kycStatus.kycStatus === 'VERIFIED' ? 'Verified' : 'Pending'}
+                    </span>
+                  </div>
+                  {kycStatus.kycStatus !== 'VERIFIED' && (
+                    <Link to="/kyc" className="text-xs text-amber-400 hover:underline">
+                      Complete Now
+                    </Link>
+                  )}
                 </div>
-                <span>New Application</span>
-              </Link>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {kycStatus?.kycStatus === 'VERIFIED' ? (
+                <Link
+                  to="/apply"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-black font-semibold hover:shadow-lg hover:shadow-amber-500/20 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <FaPlus className="text-lg" />
+                  </div>
+                  <span>New Application</span>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-500/20 text-gray-400 cursor-not-allowed">
+                  <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center">
+                    <FaPlus className="text-lg" />
+                  </div>
+                  <span>Verify KYC First</span>
+                </div>
+              )}
               <Link
                 to="/kyc"
                 className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-amber-500/20 transition-all group"

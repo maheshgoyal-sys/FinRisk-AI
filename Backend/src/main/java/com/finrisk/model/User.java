@@ -1,11 +1,13 @@
 package com.finrisk.model;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
+@Data
 @Document(collection = "users")
 public class User {
     @Id
@@ -22,30 +24,22 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // Verification Fields
+    private String aadhaarStatus = "NOT_SUBMITTED";
+    private String aadhaarNumber;
+    private String aadhaarName;
+    private String aadhaarDob;
+    private String aadhaarAddress;
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    private String panStatus = "NOT_SUBMITTED";
+    private String panNumber;
+    private String panName;
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    private String addressStatus = "NOT_SUBMITTED";
+    private String address;
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    private String photoStatus = "NOT_SUBMITTED";
+    private String photoUrl;
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    private String kycStatus = "NOT_SUBMITTED";
 }
