@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaCloudUploadAlt, FaFilePdf, FaImage, FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaFilePdf, FaImage, FaCheck, FaTimes, FaTrash, FaPaperPlane, FaClock } from 'react-icons/fa';
 import api from '../services/api';
 
 const documentTypes = [
@@ -16,6 +17,8 @@ export default function KycUpload() {
   const [uploadedDocs, setUploadedDocs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [kycStatus, setKycStatus] = useState(null);
 
   useEffect(() => {
     loadDocuments();
@@ -25,9 +28,18 @@ export default function KycUpload() {
     try {
       const res = await api.get('/kyc/status');
       setUploadedDocs(res.data.documents || []);
+      setKycStatus(res.data);
     } catch (error) {
       console.error('Error loading documents:', error);
     }
+  };
+
+  // Check if all 4 documents are uploaded
+  const uploadedTypes = uploadedDocs.map(d => d.documentType);
+  const allDocumentsUploaded = documentTypes.every(doc => uploadedTypes.includes(doc.id));
+
+  const handleSubmitForReview = () => {
+    setSubmitted(true);
   };
 
   const handleFileSelect = async (docType, file) => {
@@ -246,6 +258,57 @@ export default function KycUpload() {
               <div className="text-sm text-gray-400">Remaining</div>
             </div>
           </div>
+        </motion.div>
+
+        {/* Submit Button or Success Message */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8"
+        >
+          {submitted || kycStatus?.kycStatus === 'PENDING' || kycStatus?.kycStatus === 'VERIFIED' ? (
+            <div className="glass p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
+                <FaClock className="text-3xl text-warning" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Documents Submitted for Review</h3>
+              <p className="text-gray-400 mb-4">
+                Please wait for admin to verify your documents. Once approved, you can fill the loan form.
+              </p>
+              <p className="text-sm text-amber-400">
+                Current Status: {kycStatus?.kycStatus || 'PENDING'}
+              </p>
+              <Link
+                to="/dashboard"
+                className="btn-secondary inline-block mt-4"
+              >
+                Go to Dashboard
+              </Link>
+            </div>
+          ) : allDocumentsUploaded ? (
+            <div className="glass p-6 text-center">
+              <h3 className="text-lg font-semibold mb-4">All Documents Uploaded!</h3>
+              <p className="text-gray-400 mb-4">
+                Click below to submit your documents for admin verification.
+              </p>
+              <button
+                onClick={handleSubmitForReview}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaPaperPlane /> Submit for Review
+              </button>
+            </div>
+          ) : (
+            <div className="glass p-6 text-center">
+              <p className="text-gray-400">
+                Please upload all 4 documents (Aadhaar, PAN, Address, Photo) to proceed.
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                {documentTypes.length - uploadedDocs.length} document(s) remaining
+              </p>
+            </div>
+          )}
         </motion.div>
       </div>
     </div>

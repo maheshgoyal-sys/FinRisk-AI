@@ -14,14 +14,15 @@ export default function Navbar() {
     navigate('/');
   };
 
-  const navLinks = [
+  // Only show these links for regular users, not admin
+  const userLinks = user?.role !== 'ADMIN' ? [
     { path: '/dashboard', label: 'Dashboard', icon: FaHome },
     { path: '/apply', label: 'Apply', icon: FaFileAlt },
     { path: '/calculator', label: 'Calculator', icon: FaCalculator },
     { path: '/kyc', label: 'KYC', icon: FaIdCard },
     { path: '/kyc-enhanced', label: 'Verify', icon: FaShieldAlt },
     { path: '/risk-dashboard', label: 'Risk', icon: FaChartLine },
-  ];
+  ] : [];
 
   return (
     <motion.nav
@@ -53,7 +54,7 @@ export default function Navbar() {
                 to="/login"
                 className="text-gray-400 hover:text-amber-400 transition-colors px-4 py-2 text-sm font-medium"
               >
-                Login
+                Admin Login
               </Link>
               <Link
                 to="/register"
@@ -64,7 +65,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {navLinks.map((link) => (
+              {userLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}

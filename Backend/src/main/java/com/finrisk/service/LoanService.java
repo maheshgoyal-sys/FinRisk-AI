@@ -113,10 +113,31 @@ public class LoanService {
         double score = calculateRiskScore(creditScore, app.getEmploymentYears(), totalAssets, totalLiabilities, dti);
         boolean approved = score >= 50 && dti < 50 && foir < 50;
 
+        // Calculate loan details
+        double principal = app.getLoanAmount();
+        int tenure = app.getTenure();
+        double interestRate = getInterestRate(creditScore, app.getEmploymentType());
+        double monthlyEmi = calculateEMI(principal, tenure, interestRate);
+        double totalInterest = (monthlyEmi * tenure) - principal;
+        double totalPayable = principal + totalInterest;
+
         LoanApplication.MLResponse response = new LoanApplication.MLResponse();
         response.setApproved(approved);
         response.setConfidence(score / 100.0);
         response.setRiskLevel(score >= 70 ? "LOW" : (score >= 50 ? "MEDIUM" : "HIGH"));
+
+        // Set loan details
+        Map<String, Object> loanDetails = new HashMap<>();
+        loanDetails.put("loan_amount", principal);
+        loanDetails.put("interest_rate", interestRate);
+        loanDetails.put("monthly_emi", monthlyEmi);
+        loanDetails.put("total_interest", totalInterest);
+        loanDetails.put("total_payment", totalPayable);
+        loanDetails.put("tenure_months", tenure);
+        loanDetails.put("processing_fee", principal * 0.01);
+        loanDetails.put("approval_probability", score / 100.0);
+        response.setLoanDetails(loanDetails);
+
         app.setMlResponse(response);
         app.setStatus(approved ? "APPROVED" : "REJECTED");
 
@@ -127,10 +148,32 @@ public class LoanService {
         explanation.append("Employment stability (").append(app.getEmploymentYears()).append(" years). ");
         if (approved) {
             explanation.append("Your profile meets our lending criteria.");
+            explanation.append(" Eligible loan amount: ₹").append(String.format("%.0f", principal));
+            explanation.append(" at ").append(String.format("%.1f", interestRate)).append("% interest.");
         } else {
             explanation.append("Consider improving your credit score or reducing existing debts.");
         }
         app.setAiExplanation(explanation.toString());
+    }
+
+    private double getInterestRate(int creditScore, String employmentType) {
+        double baseRate = 12.0; // Base interest rate
+        if (creditScore >= 750) baseRate = 8.5;
+        else if (creditScore >= 700) baseRate = 10.0;
+        else if (creditScore >= 650) baseRate = 12.0;
+        else if (creditScore >= 600) baseRate = 15.0;
+
+        // Adjust for employment type
+        if ("SALARIED".equals(employmentType)) baseRate -= 1.0;
+        else if ("SELF_EMPLOYED".equals(employmentType)) baseRate += 0.5;
+
+        return baseRate;
+    }
+
+    private double calculateEMI(double principal, int tenure, double rate) {
+        double monthlyRate = rate / 12 / 100;
+        if (monthlyRate == 0) return principal / tenure;
+        return (principal * monthlyRate * Math.pow(1 + monthlyRate, tenure)) / (Math.pow(1 + monthlyRate, tenure) - 1);
     }
 
     private double calculateDTI(double income, double emi) {

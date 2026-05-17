@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,6 +28,12 @@ public class KycController {
     public ResponseEntity<Map<String, Object>> getStatus(Authentication auth) {
         String userId = auth.getName();
         return ResponseEntity.ok(kycService.getStatus(userId));
+    }
+
+    // Admin endpoint to get documents for any user
+    @GetMapping("/user/{userId}/documents")
+    public ResponseEntity<List<KycDocument>> getUserDocuments(@PathVariable String userId) {
+        return ResponseEntity.ok(kycService.getDocumentsByUserId(userId));
     }
 
     @DeleteMapping("/{id}")

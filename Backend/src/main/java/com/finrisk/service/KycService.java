@@ -109,4 +109,8 @@ public class KycService {
     public void deleteDocument(String id) {
         repository.deleteById(id);
     }
+
+    public List<KycDocument> getDocumentsByUserId(String userId) {
+        return repository.findByUserId(userId);
+    }
 }

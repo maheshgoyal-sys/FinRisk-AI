@@ -1,521 +1,153 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaUser, FaCoins, FaFileAlt, FaLandmark, FaCheck, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaUser, FaMoneyBillWave, FaBriefcase, FaHome, FaPercent, FaCalendar, FaChartLine, FaCheck, FaClock, FaIdCard } from 'react-icons/fa';
 import api from '../services/api';
 
-const steps = [
-  { id: 1, title: 'Personal Details', icon: FaUser },
-  { id: 2, title: 'Financial Info', icon: FaCoins },
-  { id: 3, title: 'Loan Details', icon: FaFileAlt },
-  { id: 4, title: 'Assets & Liabilities', icon: FaLandmark },
-  { id: 5, title: 'Review & Submit', icon: FaCheck },
-];
-
 export default function LoanApplication() {
-  const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [kycStatus, setKycStatus] = useState(null);
+  const [checkingKyc, setCheckingKyc] = useState(true);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    // Step 1: Personal Details
-    fullName: '',
-    dateOfBirth: '',
-    gender: '',
-    email: '',
-    phone: '',
-
-    // Step 2: Financial Information
     monthlyIncome: '',
-    employmentType: '',
-    employmentYears: '',
-    companyName: '',
-    annualIncome: '',
-
-    // Step 3: Loan Details
+    existingEmi: '',
+    loanType: '',
+    propertyValue: '',
     loanAmount: 100000,
-    loanPurpose: '',
-    tenure: '',
-    existingEmis: '',
-
-    // Step 4: Assets & Liabilities
-    assets: {
-      realEstate: '',
-      vehicle: '',
-      investments: '',
-      other: '',
-    },
-    liabilities: {
-      existingLoans: '',
-      creditCards: '',
-      otherDebts: '',
-    },
+    employmentType: '',
+    tenure: 24,
+    creditScore: '',
   });
 
+  useEffect(() => {
+    checkKycStatus();
+  }, []);
+
+  const checkKycStatus = async () => {
+    try {
+      const res = await api.get('/kyc/status');
+      setKycStatus(res.data);
+    } catch (error) {
+      console.error('Error checking KYC status:', error);
+    } finally {
+      setCheckingKyc(false);
+    }
+  };
+
+  const isKycVerified = kycStatus?.kycStatus === 'VERIFIED';
+
+  if (checkingKyc) {
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      </div>
+    );
+  }
+
+  if (!isKycVerified) {
+    return (
+      <div className="min-h-screen pt-24 pb-12 px-6">
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass p-8 text-center"
+          >
+            <div className="w-20 h-20 rounded-full bg-warning/20 flex items-center justify-center mx-auto mb-6">
+              <FaClock className="text-4xl text-warning" />
+            </div>
+            <h2 className="text-2xl font-bold mb-4">KYC Verification Required</h2>
+            <p className="text-gray-400 mb-6">
+              You must complete and get your documents verified by admin before applying for a loan.
+            </p>
+
+            {/* Document Status */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
+                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
+                <p className="text-sm">Aadhaar Card</p>
+                <p className={`text-xs ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
+                  {kycStatus?.kycVerification?.aadhaarStatus || 'Not Submitted'}
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
+                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
+                <p className="text-sm">PAN Card</p>
+                <p className={`text-xs ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
+                  {kycStatus?.kycVerification?.panStatus || 'Not Submitted'}
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
+                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
+                <p className="text-sm">Address Proof</p>
+                <p className={`text-xs ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
+                  {kycStatus?.kycVerification?.addressStatus || 'Not Submitted'}
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
+                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
+                <p className="text-sm">Profile Photo</p>
+                <p className={`text-xs ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
+                  {kycStatus?.kycVerification?.photoStatus || 'Not Submitted'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <Link to="/kyc" className="btn-primary flex items-center gap-2">
+                <FaUser /> Upload Documents
+              </Link>
+              <Link to="/dashboard" className="btn-secondary">
+                Go to Dashboard
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // Loan Application Form (only shows when KYC is verified)
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAssetChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      assets: { ...prev.assets, [field]: value }
-    }));
-  };
-
-  const handleLiabilityChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      liabilities: { ...prev.liabilities, [field]: value }
-    }));
-  };
-
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return formData.fullName && formData.email && formData.phone;
-      case 2:
-        return formData.monthlyIncome && formData.employmentType;
-      case 3:
-        return formData.loanAmount && formData.loanPurpose && formData.tenure;
-      case 4:
-        return true;
-      default:
-        return true;
-    }
-  };
-
-  const handleNext = () => {
-    if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+
     try {
       const payload = {
-        fullName: formData.fullName,
-        dateOfBirth: formData.dateOfBirth,
-        gender: formData.gender,
-        email: formData.email,
-        phone: formData.phone,
         monthlyIncome: Number(formData.monthlyIncome),
-        employmentType: formData.employmentType,
-        employmentYears: Number(formData.employmentYears),
-        companyName: formData.companyName,
-        annualIncome: Number(formData.annualIncome),
+        existingEmis: Number(formData.existingEmi) || 0,
+        loanType: formData.loanType,
+        propertyValue: Number(formData.propertyValue) || 0,
         loanAmount: Number(formData.loanAmount),
-        loanPurpose: formData.loanPurpose,
+        employmentType: formData.employmentType,
         tenure: Number(formData.tenure),
-        existingEmis: Number(formData.existingEmis) || 0,
-        assets: {
-          realEstate: Number(formData.assets.realEstate) || 0,
-          vehicle: Number(formData.assets.vehicle) || 0,
-          investments: Number(formData.assets.investments) || 0,
-          other: Number(formData.assets.other) || 0,
-        },
-        liabilities: {
-          existingLoans: Number(formData.liabilities.existingLoans) || 0,
-          creditCards: Number(formData.liabilities.creditCards) || 0,
-          otherDebts: Number(formData.liabilities.otherDebts) || 0,
-        },
+        creditScore: formData.creditScore ? Number(formData.creditScore) : null,
+        fullName: 'User',
+        dateOfBirth: '',
+        gender: '',
+        email: '',
+        phone: '',
+        annualIncome: Number(formData.monthlyIncome) * 12,
+        employmentYears: 1,
+        companyName: '',
+        assets: { realEstate: Number(formData.propertyValue), vehicle: 0, investments: 0, other: 0 },
+        liabilities: { existingLoans: Number(formData.existingEmi), creditCards: 0, otherDebts: 0 },
+        loanPurpose: formData.loanType,
       };
 
       const res = await api.post('/loan/predict', payload);
-      navigate(`/result/${res.data._id}`);
+      navigate(`/result/${res.data.id}`);
     } catch (error) {
       console.error('Error submitting application:', error);
       alert('Failed to submit application. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-6">Personal Details</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  value={formData.fullName}
-                  onChange={(e) => handleChange('fullName', e.target.value)}
-                  className="input-field"
-                  placeholder="Enter your full name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Date of Birth</label>
-                <input
-                  type="date"
-                  value={formData.dateOfBirth}
-                  onChange={(e) => handleChange('dateOfBirth', e.target.value)}
-                  className="input-field"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Gender</label>
-                <select
-                  value={formData.gender}
-                  onChange={(e) => handleChange('gender', e.target.value)}
-                  className="input-field"
-                >
-                  <option value="">Select gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                  <option value="OTHER">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Email *</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  className="input-field"
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">Phone Number *</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  className="input-field"
-                  placeholder="Enter your phone number"
-                />
-              </div>
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-6">Financial Information</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Monthly Income (₹) *</label>
-                <input
-                  type="number"
-                  value={formData.monthlyIncome}
-                  onChange={(e) => handleChange('monthlyIncome', e.target.value)}
-                  className="input-field"
-                  placeholder="Enter monthly income"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Employment Type *</label>
-                <select
-                  value={formData.employmentType}
-                  onChange={(e) => handleChange('employmentType', e.target.value)}
-                  className="input-field"
-                >
-                  <option value="">Select employment type</option>
-                  <option value="SALARIED">Salaried</option>
-                  <option value="SELF_EMPLOYED">Self-Employed</option>
-                  <option value="BUSINESS">Business Owner</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Years of Employment</label>
-                <input
-                  type="number"
-                  value={formData.employmentYears}
-                  onChange={(e) => handleChange('employmentYears', e.target.value)}
-                  className="input-field"
-                  placeholder="Years at current job"
-                />
-              </div>
-              {formData.employmentType === 'SALARIED' && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">Company Name</label>
-                  <input
-                    type="text"
-                    value={formData.companyName}
-                    onChange={(e) => handleChange('companyName', e.target.value)}
-                    className="input-field"
-                    placeholder="Company name"
-                  />
-                </div>
-              )}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">Annual Income (₹)</label>
-                <input
-                  type="number"
-                  value={formData.annualIncome}
-                  onChange={(e) => handleChange('annualIncome', e.target.value)}
-                  className="input-field"
-                  placeholder="Annual income"
-                />
-              </div>
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-6">Loan Details</h3>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Loan Amount: ₹{formData.loanAmount.toLocaleString()}
-                </label>
-                <input
-                  type="range"
-                  min="10000"
-                  max="5000000"
-                  step="10000"
-                  value={formData.loanAmount}
-                  onChange={(e) => handleChange('loanAmount', Number(e.target.value))}
-                  className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
-                />
-                <div className="flex justify-between text-sm text-gray-400 mt-2">
-                  <span>₹10,000</span>
-                  <span>₹50,00,000</span>
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Loan Purpose *</label>
-                  <select
-                    value={formData.loanPurpose}
-                    onChange={(e) => handleChange('loanPurpose', e.target.value)}
-                    className="input-field"
-                  >
-                    <option value="">Select purpose</option>
-                    <option value="PERSONAL">Personal</option>
-                    <option value="BUSINESS">Business</option>
-                    <option value="HOME">Home</option>
-                    <option value="EDUCATION">Education</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Tenure (months) *</label>
-                  <select
-                    value={formData.tenure}
-                    onChange={(e) => handleChange('tenure', e.target.value)}
-                    className="input-field"
-                  >
-                    <option value="">Select tenure</option>
-                    <option value="12">12 months</option>
-                    <option value="24">24 months</option>
-                    <option value="36">36 months</option>
-                    <option value="48">48 months</option>
-                    <option value="60">60 months</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-2">Existing EMIs (₹/month)</label>
-                  <input
-                    type="number"
-                    value={formData.existingEmis}
-                    onChange={(e) => handleChange('existingEmis', e.target.value)}
-                    className="input-field"
-                    placeholder="Total monthly EMIs"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 4:
-        const totalAssets = Object.values(formData.assets).reduce((sum, val) => sum + (Number(val) || 0), 0);
-        const totalLiabilities = Object.values(formData.liabilities).reduce((sum, val) => sum + (Number(val) || 0), 0);
-
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold mb-6">Assets & Liabilities</h3>
-
-            <div className="glass p-4">
-              <h4 className="font-medium mb-4 text-success">Assets</h4>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Real Estate (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.assets.realEstate}
-                    onChange={(e) => handleAssetChange('realEstate', e.target.value)}
-                    className="input-field"
-                    placeholder="Property value"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Vehicle (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.assets.vehicle}
-                    onChange={(e) => handleAssetChange('vehicle', e.target.value)}
-                    className="input-field"
-                    placeholder="Vehicle value"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Investments (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.assets.investments}
-                    onChange={(e) => handleAssetChange('investments', e.target.value)}
-                    className="input-field"
-                    placeholder="Investment value"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Other Assets (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.assets.other}
-                    onChange={(e) => handleAssetChange('other', e.target.value)}
-                    className="input-field"
-                    placeholder="Other assets"
-                  />
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <span className="text-gray-400">Total Assets: </span>
-                <span className="font-mono text-success">₹{totalAssets.toLocaleString()}</span>
-              </div>
-            </div>
-
-            <div className="glass p-4">
-              <h4 className="font-medium mb-4 text-danger">Liabilities</h4>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Existing Loans (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.liabilities.existingLoans}
-                    onChange={(e) => handleLiabilityChange('existingLoans', e.target.value)}
-                    className="input-field"
-                    placeholder="Outstanding loans"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Credit Cards (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.liabilities.creditCards}
-                    onChange={(e) => handleLiabilityChange('creditCards', e.target.value)}
-                    className="input-field"
-                    placeholder="Credit card balance"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-2">Other Debts (₹)</label>
-                  <input
-                    type="number"
-                    value={formData.liabilities.otherDebts}
-                    onChange={(e) => handleLiabilityChange('otherDebts', e.target.value)}
-                    className="input-field"
-                    placeholder="Other debts"
-                  />
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <span className="text-gray-400">Total Liabilities: </span>
-                <span className="font-mono text-danger">₹{totalLiabilities.toLocaleString()}</span>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 5:
-        const totalAssetsVal = Object.values(formData.assets).reduce((sum, val) => sum + (Number(val) || 0), 0);
-        const totalLiabilitiesVal = Object.values(formData.liabilities).reduce((sum, val) => sum + (Number(val) || 0), 0);
-
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold mb-6">Review & Submit</h3>
-
-            <div className="space-y-4">
-              <div className="glass p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium">Personal Details</h4>
-                  <button
-                    onClick={() => setCurrentStep(1)}
-                    className="text-accent-400 text-sm hover:text-accent-300"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="grid md:grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-gray-400">Name:</span> {formData.fullName}</div>
-                  <div><span className="text-gray-400">Email:</span> {formData.email}</div>
-                  <div><span className="text-gray-400">Phone:</span> {formData.phone}</div>
-                  <div><span className="text-gray-400">DOB:</span> {formData.dateOfBirth}</div>
-                </div>
-              </div>
-
-              <div className="glass p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium">Financial Information</h4>
-                  <button
-                    onClick={() => setCurrentStep(2)}
-                    className="text-accent-400 text-sm hover:text-accent-300"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="grid md:grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-gray-400">Monthly Income:</span> ₹{Number(formData.monthlyIncome).toLocaleString()}</div>
-                  <div><span className="text-gray-400">Employment:</span> {formData.employmentType}</div>
-                  <div><span className="text-gray-400">Years of Work:</span> {formData.employmentYears}</div>
-                </div>
-              </div>
-
-              <div className="glass p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium">Loan Details</h4>
-                  <button
-                    onClick={() => setCurrentStep(3)}
-                    className="text-accent-400 text-sm hover:text-accent-300"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="grid md:grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-gray-400">Amount:</span> ₹{formData.loanAmount.toLocaleString()}</div>
-                  <div><span className="text-gray-400">Purpose:</span> {formData.loanPurpose}</div>
-                  <div><span className="text-gray-400">Tenure:</span> {formData.tenure} months</div>
-                  <div><span className="text-gray-400">Existing EMIs:</span> ₹{Number(formData.existingEmis || 0).toLocaleString()}</div>
-                </div>
-              </div>
-
-              <div className="glass p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium">Assets & Liabilities</h4>
-                  <button
-                    onClick={() => setCurrentStep(4)}
-                    className="text-accent-400 text-sm hover:text-accent-300"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="grid md:grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-gray-400">Total Assets:</span> ₹{totalAssetsVal.toLocaleString()}</div>
-                  <div><span className="text-gray-400">Total Liabilities:</span> ₹{totalLiabilitiesVal.toLocaleString()}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
     }
   };
 
@@ -528,93 +160,175 @@ export default function LoanApplication() {
           className="text-center mb-8"
         >
           <h1 className="text-3xl font-bold mb-2">Loan Application</h1>
-          <p className="text-gray-400">Complete the form to apply for a loan</p>
+          <p className="text-gray-400">Fill in your details to get instant loan approval</p>
         </motion.div>
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-between mb-8 relative">
-          <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-white/20 -z-10"></div>
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            const isActive = currentStep >= step.id;
-            const isCurrent = currentStep === step.id;
-
-            return (
-              <div key={step.id} className="flex flex-col items-center">
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                    isActive
-                      ? 'bg-gradient-primary'
-                      : 'bg-white/10'
-                  } ${isCurrent ? 'ring-4 ring-accent-500/30' : ''}`}
-                >
-                  <Icon className={`${isActive ? 'text-white' : 'text-gray-400'}`} />
-                </div>
-                <span className={`text-xs mt-2 ${isActive ? 'text-white' : 'text-gray-500'}`}>
-                  {step.title}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Form Content */}
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="glass p-6"
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          onSubmit={handleSubmit}
+          className="glass p-8"
         >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
-              {renderStepContent()}
-            </motion.div>
-          </AnimatePresence>
+          <div className="space-y-6">
+            {/* Income & EMI */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaMoneyBillWave className="inline mr-2" /> Monthly Income (₹) *
+                </label>
+                <input
+                  type="number"
+                  value={formData.monthlyIncome}
+                  onChange={(e) => handleChange('monthlyIncome', e.target.value)}
+                  className="input-field"
+                  placeholder="Enter monthly income"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaPercent className="inline mr-2" /> Existing EMI (₹)
+                </label>
+                <input
+                  type="number"
+                  value={formData.existingEmi}
+                  onChange={(e) => handleChange('existingEmi', e.target.value)}
+                  className="input-field"
+                  placeholder="Monthly EMI payments"
+                />
+              </div>
+            </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
+            {/* Loan Type & Property Value */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaHome className="inline mr-2" /> Loan Type *
+                </label>
+                <select
+                  value={formData.loanType}
+                  onChange={(e) => handleChange('loanType', e.target.value)}
+                  className="input-field"
+                  required
+                >
+                  <option value="">Select loan type</option>
+                  <option value="PERSONAL">Personal Loan</option>
+                  <option value="HOME">Home Loan</option>
+                  <option value="BUSINESS">Business Loan</option>
+                  <option value="VEHICLE">Vehicle Loan</option>
+                  <option value="EDUCATION">Education Loan</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaHome className="inline mr-2" /> Property Value (₹)
+                </label>
+                <input
+                  type="number"
+                  value={formData.propertyValue}
+                  onChange={(e) => handleChange('propertyValue', e.target.value)}
+                  className="input-field"
+                  placeholder="If applicable"
+                />
+              </div>
+            </div>
+
+            {/* Loan Amount Slider */}
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-300">
+                Loan Amount: ₹{Number(formData.loanAmount).toLocaleString()}
+              </label>
+              <input
+                type="range"
+                min="10000"
+                max="5000000"
+                step="10000"
+                value={formData.loanAmount}
+                onChange={(e) => handleChange('loanAmount', Number(e.target.value))}
+                className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-sm text-gray-400 mt-2">
+                <span>₹10,000</span>
+                <span>₹50,00,000</span>
+              </div>
+            </div>
+
+            {/* Employment Type & Tenure */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaBriefcase className="inline mr-2" /> Employment Type *
+                </label>
+                <select
+                  value={formData.employmentType}
+                  onChange={(e) => handleChange('employmentType', e.target.value)}
+                  className="input-field"
+                  required
+                >
+                  <option value="">Select employment type</option>
+                  <option value="SALARIED">Salaried</option>
+                  <option value="SELF_EMPLOYED">Self-Employed</option>
+                  <option value="BUSINESS">Business Owner</option>
+                  <option value="FREELANCER">Freelancer</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <FaCalendar className="inline mr-2" /> Tenure (months) *
+                </label>
+                <select
+                  value={formData.tenure}
+                  onChange={(e) => handleChange('tenure', e.target.value)}
+                  className="input-field"
+                  required
+                >
+                  <option value="6">6 months</option>
+                  <option value="12">12 months</option>
+                  <option value="18">18 months</option>
+                  <option value="24">24 months</option>
+                  <option value="36">36 months</option>
+                  <option value="48">48 months</option>
+                  <option value="60">60 months</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Credit Score (Optional) */}
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-300">
+                <FaChartLine className="inline mr-2" /> Credit Score (Optional)
+              </label>
+              <input
+                type="number"
+                value={formData.creditScore}
+                onChange={(e) => handleChange('creditScore', e.target.value)}
+                className="input-field"
+                placeholder="300-900 (CIBIL Score)"
+                min="300"
+                max="900"
+              />
+            </div>
+
+            {/* Submit Button */}
             <button
-              onClick={handlePrev}
-              disabled={currentStep === 1}
-              className={`btn-secondary flex items-center gap-2 ${currentStep === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-4 text-lg font-semibold flex items-center justify-center gap-2"
             >
-              <FaArrowLeft /> Previous
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <FaCheck /> Submit Application
+                </>
+              )}
             </button>
-
-            {currentStep === 5 ? (
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="btn-primary flex items-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Submitting...
-                  </>
-                ) : (
-                  <>Submit <FaCheck /></>
-                )}
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                disabled={!canProceed()}
-                className={`btn-primary flex items-center gap-2 ${!canProceed() ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                Next <FaArrowRight />
-              </button>
-            )}
           </div>
-        </motion.div>
+        </motion.form>
       </div>
     </div>
   );
