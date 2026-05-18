@@ -419,7 +419,7 @@ function UserDetailModal({ user, applications, documents, onClose, onUpdateVerif
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <DocumentVerificationCard
-              title="Aadhaar Card"
+              title={getDocumentByType('AADHAAR')?.fileName || 'Aadhaar Card'}
               status={user.aadhaarStatus}
               details={user.aadhaarNumber ? `****${user.aadhaarNumber.slice(-4)}` : 'Not submitted'}
               onApprove={() => onUpdateVerification(user.id, 'aadhaar', 'VERIFIED')}
@@ -427,9 +427,10 @@ function UserDetailModal({ user, applications, documents, onClose, onUpdateVerif
               icon={FaIdCard}
               docUrl={getDocumentByType('AADHAAR')?.fileUrl}
               onView={() => handleViewDocument(getDocumentByType('AADHAAR')?.fileUrl)}
+              document={getDocumentByType('AADHAAR')}
             />
             <DocumentVerificationCard
-              title="PAN Card"
+              title={getDocumentByType('PAN')?.fileName || 'PAN Card'}
               status={user.panStatus}
               details={user.panNumber || 'Not submitted'}
               onApprove={() => onUpdateVerification(user.id, 'pan', 'VERIFIED')}
@@ -437,9 +438,10 @@ function UserDetailModal({ user, applications, documents, onClose, onUpdateVerif
               icon={FaFileAlt}
               docUrl={getDocumentByType('PAN')?.fileUrl}
               onView={() => handleViewDocument(getDocumentByType('PAN')?.fileUrl)}
+              document={getDocumentByType('PAN')}
             />
             <DocumentVerificationCard
-              title="Address Proof"
+              title={getDocumentByType('ADDRESS')?.fileName || 'Address Proof'}
               status={user.addressStatus}
               details={user.address || 'Not submitted'}
               onApprove={() => onUpdateVerification(user.id, 'address', 'VERIFIED')}
@@ -447,9 +449,10 @@ function UserDetailModal({ user, applications, documents, onClose, onUpdateVerif
               icon={FaAddressCard}
               docUrl={getDocumentByType('ADDRESS')?.fileUrl}
               onView={() => handleViewDocument(getDocumentByType('ADDRESS')?.fileUrl)}
+              document={getDocumentByType('ADDRESS')}
             />
             <DocumentVerificationCard
-              title="Photo Verification"
+              title={getDocumentByType('PHOTO')?.fileName || 'Photo Verification'}
               status={user.photoStatus}
               details={user.photoVerified ? 'Photo uploaded' : 'Not submitted'}
               onApprove={() => onUpdateVerification(user.id, 'photo', 'VERIFIED')}
@@ -457,6 +460,7 @@ function UserDetailModal({ user, applications, documents, onClose, onUpdateVerif
               icon={FaImage}
               docUrl={getDocumentByType('PHOTO')?.fileUrl}
               onView={() => handleViewDocument(getDocumentByType('PHOTO')?.fileUrl)}
+              document={getDocumentByType('PHOTO')}
             />
           </div>
         </div>
@@ -571,7 +575,7 @@ function InfoRow({ label, value, icon: Icon }) {
   );
 }
 
-function DocumentVerificationCard({ title, status, details, onApprove, onReject, icon: Icon, docUrl, onView }) {
+function DocumentVerificationCard({ title, status, details, onApprove, onReject, icon: Icon, docUrl, onView, document }) {
   const getStatusColor = (s) => {
     switch (s) {
       case 'VERIFIED': return 'border-success bg-success/10';
@@ -585,9 +589,14 @@ function DocumentVerificationCard({ title, status, details, onApprove, onReject,
     <div className={`border rounded-lg p-4 ${getStatusColor(status)}`}>
       <div className="flex items-center gap-3 mb-3">
         <Icon className="text-xl" />
-        <div>
-          <p className="font-medium">{title}</p>
+        <div className="flex-1">
+          <p className="font-medium">{title || 'Unknown Document'}</p>
           <p className="text-sm text-gray-400">{details}</p>
+          {document?.uploadedAt && (
+            <p className="text-xs text-gray-500">
+              Uploaded: {new Date(document.uploadedAt).toLocaleDateString()}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex items-center justify-between">
@@ -605,6 +614,7 @@ function DocumentVerificationCard({ title, status, details, onApprove, onReject,
             <button
               onClick={onView}
               className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded text-sm hover:bg-blue-500/30 flex items-center gap-1"
+              title={`View ${title}`}
             >
               <FaEye /> View
             </button>
