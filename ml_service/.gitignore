@@ -1,0 +1,21 @@
+# env file
+.env
+
+# logs
+*.log
+
+# python cache (agar ML python hai)
+__pycache__/
+*.pyc
+*.pyo
+
+# venv
+venv/
+.env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
