@@ -1,88 +1,79 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaShieldAlt, FaBolt, FaChartLine, FaUserShield, FaArrowRight, FaStar, FaQuoteLeft } from 'react-icons/fa';
+import { FaShieldAlt, FaBolt, FaChartLine, FaUserShield, FaArrowRight, FaStar, FaQuoteLeft, FaRobot, FaFingerprint } from 'react-icons/fa';
 
 export default function Landing() {
   const features = [
     {
-      icon: <FaBolt className="text-2xl" />,
-      title: 'Instant Approval',
-      desc: 'Get loan decisions in as little as 2 minutes with our AI-powered system'
+      icon: <FaRobot className="text-2xl" />,
+      title: 'Quantum AI Analysis',
+      desc: 'Neural networks process loan applications in milliseconds with unprecedented accuracy.'
     },
     {
-      icon: <FaShieldAlt className="text-2xl" />,
-      title: 'Risk Assessment',
-      desc: 'Advanced algorithms analyze thousands of data points for accurate risk evaluation'
+      icon: <FaFingerprint className="text-2xl" />,
+      title: 'Biometric Security',
+      desc: 'Military-grade encryption and decentralized identity verification for total protection.'
     },
     {
       icon: <FaChartLine className="text-2xl" />,
-      title: 'Smart Analytics',
-      desc: 'Real-time insights into your financial health and loan eligibility'
+      title: 'Predictive Insights',
+      desc: 'Real-time forecasting of market trends and personalized financial trajectories.'
     },
     {
-      icon: <FaUserShield className="text-2xl" />,
-      title: 'Secure KYC',
-      desc: 'Bank-grade document verification with encrypted storage'
+      icon: <FaBolt className="text-2xl" />,
+      title: 'Hyper-Speed Processing',
+      desc: 'Instant liquidity access through our optimized blockchain-inspired ledger.'
     }
   ];
 
   const stats = [
-    { value: '98%', label: 'Accuracy Rate' },
-    { value: '50K+', label: 'Happy Users' },
-    { value: '2min', label: 'Avg. Approval' },
-    { value: '$2B+', label: 'Loans Processed' }
+    { value: '99.9%', label: 'AI Accuracy' },
+    { value: '1.2M+', label: 'Nodes Secured' },
+    { value: '< 1s', label: 'Processing Time' },
+    { value: '$5B+', label: 'Volume Handled' }
   ];
 
   const testimonials = [
     {
-      name: 'Alexandra Chen',
-      role: 'Business Owner',
-      content: 'The approval process was incredibly smooth. Got my business loan within hours, not weeks.',
+      name: 'Sarah Jenkins',
+      role: 'Tech Entrepreneur',
+      content: 'The quantum analysis gave my startup the exact funding we needed in under 60 seconds. Absolutely revolutionary.',
       rating: 5
     },
     {
-      name: 'Marcus Johnson',
-      role: 'Software Engineer',
-      content: 'Best loan experience ever. The AI analysis was transparent and the rates were excellent.',
+      name: 'David Chen',
+      role: 'Data Scientist',
+      content: 'As someone who understands the backend, FinRisk AI\'s predictive models are lightyears ahead of traditional banking.',
       rating: 5
     },
     {
-      name: 'Priya Sharma',
-      role: 'Financial Analyst',
-      content: 'Finally, a platform that understands financial needs. Premium service with premium results.',
+      name: 'Elena Rodriguez',
+      role: 'Venture Capitalist',
+      content: 'The interface is stunning, but the real power is in the AI risk assessment. It\'s my go-to platform now.',
       rating: 5
     }
   ];
 
   return (
-    <div className="pt-20">
-      {/* Premium Animated Background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[#0a0a0a]"></div>
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-radial from-amber-500/5 via-transparent to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-radial from-indigo-500/5 via-transparent to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-radial from-violet-500/3 via-transparent to-transparent rounded-full blur-3xl"></div>
-
-        {/* Animated Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: `linear-gradient(rgba(212, 175, 55, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.3) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
-
+    <div className="pt-20 overflow-hidden relative">
+      
+      {/* Decorative Orbs */}
+      <div className="absolute top-1/4 left-10 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-10 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+      
       {/* Hero Section */}
       <section className="min-h-[95vh] flex items-center justify-center relative overflow-hidden pt-20">
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-          {/* Premium Badge */}
+          {/* Cyber Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8"
+            className="mb-8 flex justify-center"
           >
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-              <span className="text-amber-300 text-sm font-medium tracking-wide">AI-Powered Elite Finance</span>
+            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]"></span>
+              <span className="text-cyan-300 text-sm font-semibold tracking-widest uppercase">System Online: v3.14.2</span>
             </div>
           </motion.div>
 
@@ -91,11 +82,11 @@ export default function Landing() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1]"
+            className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight"
           >
-            <span className="text-white">Unlock Your</span>
+            <span className="text-white">Next Generation</span>
             <br />
-            <span className="gradient-text">Financial Future</span>
+            <span className="gradient-text">Financial Intelligence</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -103,11 +94,11 @@ export default function Landing() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto font-light leading-relaxed"
+            className="text-xl md:text-2xl text-slate-400 mb-12 max-w-3xl mx-auto font-light leading-relaxed"
           >
-            Experience the pinnacle of intelligent lending.
+            Harness the power of neural networks for instant risk assessment.
             <br className="hidden md:block" />
-            <span className="text-gray-300">Premium rates. Lightning approval. Absolute clarity.</span>
+            <span className="text-slate-300 font-medium">Predictive modeling. Zero latency. Absolute control.</span>
           </motion.p>
 
           {/* CTA Buttons */}
@@ -115,14 +106,14 @@ export default function Landing() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-5 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
-            <Link to="/register" className="group btn-primary text-base px-10 py-4.5 flex items-center gap-3">
-              Apply Now
+            <Link to="/register" className="group btn-primary text-base px-10 py-4 flex items-center gap-3 w-full sm:w-auto justify-center">
+              Initialize Account
               <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/login" className="btn-secondary text-base px-10 py-4.5">
-              Member Login
+            <Link to="/login" className="btn-secondary text-base px-10 py-4 w-full sm:w-auto text-center">
+              System Login
             </Link>
           </motion.div>
 
@@ -131,43 +122,41 @@ export default function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="mt-16 flex flex-wrap justify-center items-center gap-8 text-gray-500 text-sm"
+            className="mt-20 flex flex-wrap justify-center items-center gap-8 text-slate-500 text-sm font-mono tracking-wider"
           >
             <div className="flex items-center gap-2">
-              <FaShieldAlt className="text-amber-500/60" />
-              <span>Bank-Grade Security</span>
+              <FaFingerprint className="text-purple-400/80 text-lg" />
+              <span>AES-256 ENCRYPTED</span>
             </div>
-            <div className="w-px h-4 bg-gray-700"></div>
+            <div className="w-px h-4 bg-slate-700"></div>
             <div className="flex items-center gap-2">
-              <FaBolt className="text-amber-500/60" />
-              <span>2-Minute Approval</span>
+              <FaRobot className="text-cyan-400/80 text-lg" />
+              <span>AI NEURAL NET</span>
             </div>
-            <div className="w-px h-4 bg-gray-700"></div>
+            <div className="w-px h-4 bg-slate-700"></div>
             <div className="flex items-center gap-2">
-              <FaChartLine className="text-amber-500/60" />
-              <span>Real-time Analytics</span>
+              <FaChartLine className="text-pink-400/80 text-lg" />
+              <span>99.9% UPTIME</span>
             </div>
           </motion.div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-1/4 left-10 w-72 h-72 border border-amber-500/10 rounded-full -rotate-45 animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-10 w-96 h-96 border border-indigo-500/10 rounded-full rotate-12 animate-pulse" style={{ animationDelay: '1s' }}></div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 relative">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="py-20 relative border-y border-white/5 bg-slate-900/30 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
           >
             {stats.map((stat, idx) => (
-              <div key={idx} className="glass p-6 md:p-8 text-center group hover:border-amber-500/30 transition-all duration-300">
-                <div className="text-3xl md:text-5xl font-black gradient-text mb-2 premium-number">{stat.value}</div>
-                <div className="text-gray-400 text-sm md:text-base font-medium">{stat.label}</div>
+              <div key={idx} className="p-6 md:p-8 text-center group relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                <div className="text-4xl md:text-5xl font-black gradient-text-pink mb-3 premium-number">{stat.value}</div>
+                <div className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -175,7 +164,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 relative">
+      <section className="py-32 relative">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -183,12 +172,12 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="gradient-text">Elite</span> Features
+            <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+              Core <span className="gradient-text">Architecture</span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Powered by advanced AI and decades of financial expertise,
-              our platform delivers unmatched loan experiences.
+            <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
+              Engineered from the ground up to process complex financial models 
+              with zero latency and maximum security.
             </p>
           </motion.div>
 
@@ -200,13 +189,13 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="glass-card p-8 group"
+                className="glass-card p-8 group hover:glow-purple transition-all duration-500"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/5 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-xl font-bold mb-3 text-white tracking-wide">{feature.title}</h3>
+                <p className="text-slate-400 leading-relaxed text-sm">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -214,7 +203,7 @@ export default function Landing() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 relative">
+      <section className="py-32 relative bg-gradient-to-b from-transparent to-slate-900/50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -222,15 +211,15 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Client <span className="gradient-text">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-black mb-6">
+              System <span className="gradient-text-pink">Feedback</span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Join thousands of satisfied clients who trust us with their financial journey.
+            <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+              Data logs from authorized nodes operating on the FinRisk network.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, idx) => (
               <motion.div
                 key={idx}
@@ -238,18 +227,23 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.15 }}
-                className="glass-card p-8 relative"
+                className="glass-card p-8 relative border-t-2 border-t-purple-500/30"
               >
-                <FaQuoteLeft className="absolute top-6 right-6 text-amber-500/20 text-3xl" />
-                <div className="flex gap-1 mb-4">
+                <FaQuoteLeft className="absolute top-6 right-6 text-cyan-500/10 text-4xl" />
+                <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <FaStar key={i} className="text-amber-400 text-sm" />
+                    <FaStar key={i} className="text-cyan-400 text-sm" />
                   ))}
                 </div>
-                <p className="text-gray-300 mb-6 leading-relaxed italic">"{testimonial.content}"</p>
-                <div className="border-t border-white/5 pt-4">
-                  <div className="font-bold text-white">{testimonial.name}</div>
-                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+                <p className="text-slate-300 mb-8 leading-relaxed font-light">"{testimonial.content}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-bold text-white tracking-wide">{testimonial.name}</div>
+                    <div className="text-xs text-cyan-400/80 font-mono tracking-wider">{testimonial.role}</div>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -258,28 +252,32 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-32 relative">
+        <div className="max-w-5xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="glass p-12 md:p-16 relative overflow-hidden premium-shine glow-gold"
+            className="glass-card p-12 md:p-20 relative overflow-hidden text-center glow-cyan border border-cyan-500/30"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-indigo-500/5"></div>
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-transparent"></div>
+            
+            {/* Grid overlay */}
+            <div className="absolute inset-0 opacity-[0.05]" style={{
+              backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+              backgroundSize: '20px 20px'
+            }}></div>
 
-            <div className="relative z-10 text-center">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Ready for <span className="gradient-text">Premium</span> Service?
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+                Initialize Your <span className="gradient-text">Node</span>
               </h2>
-              <p className="text-gray-400 mb-10 max-w-xl mx-auto text-lg">
-                Join the elite circle of FinRisk members and experience
-                financial excellence like never before.
+              <p className="text-slate-400 mb-12 max-w-2xl mx-auto text-lg leading-relaxed font-light">
+                Connect to the most advanced financial intelligence network.
+                Process applications at quantum speeds.
               </p>
               <Link to="/register" className="btn-primary text-lg px-12 py-5 inline-flex items-center gap-3">
-                Create Your Account
+                Deploy Now
                 <FaArrowRight />
               </Link>
             </div>
@@ -288,25 +286,25 @@ export default function Landing() {
       </section>
 
       {/* Premium Footer */}
-      <footer className="py-16 border-t border-white/5">
+      <footer className="py-12 border-t border-white/5 bg-slate-900/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                <span className="text-black font-black text-xl">F</span>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
+                <span className="text-white font-black text-lg">F</span>
               </div>
               <div>
-                <span className="text-xl font-bold gradient-text">FinRisk AI</span>
-                <div className="text-xs text-gray-500">Premium Financial Services</div>
+                <span className="text-lg font-bold text-white tracking-wide">FinRisk <span className="gradient-text">AI</span></span>
+                <div className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Quantum Network</div>
               </div>
             </div>
-            <div className="flex gap-8 text-gray-400">
-              <a href="#" className="hover:text-amber-400 transition-colors text-sm">Privacy Policy</a>
-              <a href="#" className="hover:text-amber-400 transition-colors text-sm">Terms of Service</a>
-              <a href="#" className="hover:text-amber-400 transition-colors text-sm">Contact</a>
+            <div className="flex gap-8 text-slate-400 font-mono text-xs uppercase tracking-wider">
+              <a href="#" className="hover:text-cyan-400 transition-colors">Privacy Protocol</a>
+              <a href="#" className="hover:text-cyan-400 transition-colors">Terms of Use</a>
+              <a href="#" className="hover:text-cyan-400 transition-colors">Comms</a>
             </div>
-            <div className="text-gray-500 text-sm">
-              © 2024 FinRisk AI. All rights reserved.
+            <div className="text-slate-500 text-xs font-mono">
+              SYSTEM TIME: {new Date().getFullYear()} // ALL PROTOCOLS SECURED
             </div>
           </div>
         </div>

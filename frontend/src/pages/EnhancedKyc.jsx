@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaCamera, FaIdCard, FaUser, FaMapMarkerAlt, FaCheck, FaTimes,
   FaSpinner, FaShieldAlt, FaExclamationTriangle, FaFileAlt,
-  FaFingerprint, FaVideo, FaIdCardAlt, FaHome, FaShieldVirus
+  FaFingerprint, FaVideo, FaIdCardAlt, FaHome, FaShieldVirus, FaTerminal, FaMicrochip
 } from 'react-icons/fa';
 import api from '../services/api';
 
@@ -143,10 +143,10 @@ export default function EnhancedKyc() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'VERIFIED': return <FaCheck className="text-success" />;
-      case 'FAILED': return <FaTimes className="text-danger" />;
-      case 'PENDING': return <FaSpinner className="text-warning animate-spin" />;
-      default: return <FaExclamationTriangle className="text-gray-400" />;
+      case 'VERIFIED': return <FaCheck className="text-cyan-400" />;
+      case 'FAILED': return <FaTimes className="text-pink-500" />;
+      case 'PENDING': return <FaSpinner className="text-purple-400 animate-spin" />;
+      default: return <FaExclamationTriangle className="text-slate-600" />;
     }
   };
 
@@ -161,15 +161,23 @@ export default function EnhancedKyc() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-6">
+    <div className="min-h-screen pt-24 pb-12 px-6 relative overflow-hidden bg-[#030014]">
+      {/* Decorative Blur Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl font-bold mb-2">Enhanced KYC Verification</h1>
-          <p className="text-gray-400">Complete all verification steps for loan approval</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm shadow-[0_0_10px_rgba(6,182,212,0.2)] mb-4">
+            <FaTerminal className="text-cyan-400 text-xs" />
+            <span className="text-cyan-300 text-[10px] font-mono tracking-widest uppercase">Quantum Verification Deck</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-black mb-2 text-white">Enhanced Biometric & OCR KYC</h1>
+          <p className="text-slate-400 font-light">Real-time cryptographic analysis of neural security parameters</p>
         </motion.div>
 
         {/* Progress Overview */}
@@ -177,46 +185,50 @@ export default function EnhancedKyc() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="glass p-6 mb-8"
+          className="glass-card p-6 mb-8 border border-purple-500/10 glow-purple bg-slate-900/20"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              <FaShieldAlt className="text-accent-500" />
-              Verification Progress
+          <div className="flex items-center justify-between mb-4 font-mono">
+            <h3 className="font-bold text-white flex items-center gap-2 text-xs uppercase tracking-wider">
+              <FaShieldAlt className="text-cyan-400" />
+              Security Protocol Progress
             </h3>
-            <span className="text-2xl font-bold text-accent-500">
+            <span className="text-xl font-bold text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.1)]">
               {Math.round(getOverallProgress())}%
             </span>
           </div>
-          <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 bg-slate-950 rounded-full overflow-hidden border border-white/5">
             <motion.div
-              className="h-full bg-gradient-primary"
+              className="h-full bg-gradient-to-r from-purple-500 to-cyan-500"
               initial={{ width: 0 }}
               animate={{ width: `${getOverallProgress()}%` }}
               transition={{ duration: 1 }}
             />
           </div>
-          <div className="grid grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
             {verificationSteps.map((step, idx) => {
               const status = kycStatus?.[step.id === 'aadhaar' ? 'aadhaarStatus' :
                                step.id === 'pan' ? 'panStatus' :
                                step.id === 'face' ? 'faceVerificationStatus' :
                                'addressProofStatus'];
+              const isVerified = status === 'VERIFIED';
+              const isCurrent = idx === currentStep;
+
               return (
-                <div key={step.id} className="text-center">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2
-                    ${status === 'VERIFIED' ? 'bg-success/20' :
-                      status === 'FAILED' ? 'bg-danger/20' :
-                      idx === currentStep ? 'bg-accent-500/20' : 'bg-white/10'}`}>
-                    <step.icon className={`${status === 'VERIFIED' ? 'text-success' :
-                      status === 'FAILED' ? 'text-danger' :
-                      idx === currentStep ? 'text-accent-500' : 'text-gray-400'}`} />
+                <div key={step.id} className="text-center font-mono p-3 rounded-xl border border-white/[0.02] bg-white/[0.01]">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2 border transition-all
+                    ${isVerified ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.2)]' :
+                      status === 'FAILED' ? 'bg-pink-500/10 border-pink-500/30 text-pink-500' :
+                      isCurrent ? 'bg-purple-500/20 border-purple-400 text-purple-300 shadow-[0_0_15px_rgba(139,92,246,0.2)]' : 'bg-slate-900/40 border-slate-800 text-slate-500'}`}>
+                    <step.icon className="text-lg" />
                   </div>
-                  <p className="text-xs text-gray-400">{step.label}</p>
-                  {status && (
-                    <div className="flex justify-center mt-1">
+                  <p className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{step.label}</p>
+                  {status ? (
+                    <div className="flex justify-center mt-2 text-[10px] items-center gap-1.5 uppercase font-mono">
                       {getStatusIcon(status)}
+                      <span className={`font-semibold ${isVerified ? 'text-cyan-400' : status === 'FAILED' ? 'text-pink-500' : 'text-purple-400'}`}>{status}</span>
                     </div>
+                  ) : (
+                    <p className="text-[9px] text-slate-600 mt-2 uppercase">LOCKED</p>
                   )}
                 </div>
               );
@@ -231,27 +243,27 @@ export default function EnhancedKyc() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+              className="fixed inset-0 bg-[#030014]/90 backdrop-blur-md flex items-center justify-center z-50 px-4"
             >
-              <div className="glass p-8 text-center">
-                <div className="relative w-48 h-48 mx-auto mb-6">
-                  <div className="absolute inset-0 border-2 border-accent-500/30 rounded-lg"></div>
+              <div className="glass-card p-8 text-center max-w-sm w-full border border-cyan-500/30 glow-cyan bg-slate-900">
+                <div className="relative w-48 h-48 mx-auto mb-6 bg-slate-950 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
+                  <div className="absolute inset-2 border border-dashed border-cyan-500/20 rounded-xl"></div>
                   <motion.div
-                    className="absolute left-0 right-0 h-1 bg-gradient-primary"
+                    className="absolute left-0 right-0 h-0.5 bg-cyan-400 shadow-[0_0_10px_#06b6d4]"
                     animate={{ top: ['0%', '100%', '0%'] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   />
-                  <FaCamera className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-accent-500" />
+                  <FaMicrochip className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl text-cyan-400/30 animate-pulse" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Scanning Document...</h3>
-                <p className="text-gray-400 mb-4">Extracting information using OCR</p>
-                <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden mx-auto">
-                  <motiondiv
-                    className="h-full bg-gradient-primary"
+                <h3 className="text-lg font-bold text-white mb-1 font-mono uppercase tracking-widest">OCR Extraction Layer</h3>
+                <p className="text-slate-400 text-xs font-light mb-6">Running semantic document analysis...</p>
+                <div className="w-full h-1 bg-slate-900 rounded-full overflow-hidden mx-auto border border-white/5 mb-2">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-purple-500 to-cyan-500"
                     style={{ width: `${scanProgress}%` }}
                   />
                 </div>
-                <p className="text-sm text-gray-400 mt-2">{Math.round(scanProgress)}%</p>
+                <p className="text-[10px] font-mono text-cyan-400">{Math.round(scanProgress)}% COMPLETE</p>
               </div>
             </motion.div>
           )}
@@ -264,11 +276,11 @@ export default function EnhancedKyc() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+              className="fixed inset-0 bg-[#030014]/95 backdrop-blur-md flex items-center justify-center z-50 px-4"
             >
-              <div className="glass p-6 w-full max-w-md">
-                <h3 className="text-xl font-semibold mb-4 text-center">Face Verification</h3>
-                <div className="relative aspect-square bg-black rounded-lg overflow-hidden mb-4">
+              <div className="glass-card p-6 w-full max-w-md border border-purple-500/30 glow-purple bg-slate-900">
+                <h3 className="text-lg font-bold text-white mb-4 text-center font-mono uppercase tracking-wider">Secure Biometric Analyzer</h3>
+                <div className="relative aspect-square bg-slate-950 rounded-2xl overflow-hidden mb-6 border border-purple-500/20 shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
                   <video
                     ref={videoRef}
                     autoPlay
@@ -279,33 +291,36 @@ export default function EnhancedKyc() {
 
                   {/* Face outline overlay */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-48 h-48 border-2 border-accent-500/50 rounded-full"></div>
+                    <div className="w-56 h-56 border-2 border-dashed border-purple-500/40 rounded-full shadow-[0_0_0_9999px_rgba(3,0,20,0.6)] flex items-center justify-center">
+                      <div className="w-48 h-48 border border-purple-400/20 rounded-full animate-ping"></div>
+                    </div>
                   </div>
 
                   {/* Liveness detection overlay */}
                   {livenessChecking && (
-                    <div className="absolute inset-0 bg-accent-500/20 flex items-center justify-center">
-                      <div className="text-center">
-                        <FaSpinner className="text-4xl text-white animate-spin mb-2 mx-auto" />
-                        <p className="text-white">Checking liveness...</p>
+                    <div className="absolute inset-0 bg-[#030014]/85 flex items-center justify-center backdrop-blur-xs">
+                      <div className="text-center font-mono">
+                        <FaSpinner className="text-3xl text-cyan-400 animate-spin mb-3 mx-auto" />
+                        <p className="text-xs text-white uppercase tracking-widest">Running Liveness Diagnostics...</p>
+                        <p className="text-[10px] text-purple-400 mt-1">SIMULATING RETINAL MATCH</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 font-mono">
                   <button
                     onClick={stopCamera}
-                    className="flex-1 btn-secondary"
+                    className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-700 text-white text-xs uppercase transition-colors"
                   >
-                    Cancel
+                    Abort Capture
                   </button>
                   <button
                     onClick={captureSelfie}
                     disabled={livenessChecking}
-                    className="flex-1 btn-primary"
+                    className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-500 text-white text-xs uppercase transition-colors"
                   >
-                    {livenessChecking ? 'Verifying...' : 'Capture'}
+                    {livenessChecking ? 'Analyzing...' : 'Commit Capture'}
                   </button>
                 </div>
               </div>
@@ -315,26 +330,33 @@ export default function EnhancedKyc() {
 
         {/* Verification Steps */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Document Upload Cards */}
           {verificationSteps.map((step, idx) => (
             <motion.div
               key={step.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className={`glass p-6 ${currentStep === idx ? 'ring-2 ring-accent-500' : ''}`}
+              className={`glass-card p-6 border transition-all ${
+                currentStep === idx
+                  ? 'border-purple-500/30 bg-purple-950/5 glow-purple ring-1 ring-purple-500/20'
+                  : 'border-white/5 bg-slate-900/10'
+              }`}
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-accent-500/20 flex items-center justify-center">
-                  <step.icon className="text-accent-500 text-xl" />
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${
+                  currentStep === idx
+                    ? 'bg-purple-500/10 border-purple-500/30 text-purple-300'
+                    : 'bg-slate-900/60 border-slate-800 text-slate-500'
+                }`}>
+                  <step.icon className="text-xl" />
                 </div>
-                <div>
-                  <h3 className="font-semibold">{step.label}</h3>
-                  <p className="text-sm text-gray-400">
-                    {step.id === 'aadhaar' && 'Upload front side of Aadhaar'}
-                    {step.id === 'pan' && 'Upload PAN card'}
-                    {step.id === 'face' && 'Take a selfie for face matching'}
-                    {step.id === 'address' && 'Upload address proof document'}
+                <div className="text-left">
+                  <h3 className="font-bold text-white text-sm tracking-wide font-mono uppercase">{step.label}</h3>
+                  <p className="text-xs text-slate-400 mt-0.5 font-light">
+                    {step.id === 'aadhaar' && 'Upload high-resolution Aadhaar binary'}
+                    {step.id === 'pan' && 'Upload government registered PAN document'}
+                    {step.id === 'face' && 'Initiate secure camera terminal selfie capture'}
+                    {step.id === 'address' && 'Upload secondary address validation ledger'}
                   </p>
                 </div>
               </div>
@@ -342,20 +364,20 @@ export default function EnhancedKyc() {
               {step.id === 'face' ? (
                 <div className="space-y-4">
                   {kycStatus?.faceVerificationStatus === 'VERIFIED' ? (
-                    <div className="bg-success/10 rounded-lg p-4 text-center">
-                      <FaCheck className="text-success text-2xl mb-2 mx-auto" />
-                      <p className="text-success font-medium">Face Verified</p>
-                      <p className="text-sm text-gray-400">
-                        Similarity: {Math.round(kycStatus.faceSimilarityScore || 0)}%
+                    <div className="bg-cyan-500/5 border border-cyan-500/20 rounded-2xl p-5 text-center font-mono">
+                      <FaCheck className="text-cyan-400 text-3xl mb-3 mx-auto shadow-[0_0_15px_rgba(6,182,212,0.3)] bg-cyan-500/10 w-12 h-12 rounded-full flex items-center justify-center" />
+                      <p className="text-cyan-400 font-bold text-sm uppercase tracking-wider">Biometrics Verified</p>
+                      <p className="text-[10px] text-slate-500 mt-1">
+                        NEURAL MATCH ACCURACY: {Math.round(kycStatus.faceSimilarityScore || 0)}%
                       </p>
                     </div>
                   ) : (
                     <button
                       onClick={startFaceVerification}
-                      className="w-full btn-primary flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold font-mono tracking-widest uppercase flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] border border-transparent"
                     >
                       <FaCamera />
-                      Start Face Verification
+                      Initialize Biometric Capture
                     </button>
                   )}
                 </div>
@@ -368,23 +390,23 @@ export default function EnhancedKyc() {
                   />
 
                   {extractedData && step.id === 'aadhaar' && kycStatus?.aadhaarNumber && (
-                    <div className="bg-accent-500/10 rounded-lg p-4 mt-4">
-                      <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
-                        <FaFileAlt /> Extracted Information
+                    <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-2xl p-5 mt-4 text-left font-mono">
+                      <h4 className="font-bold text-xs text-white mb-3 flex items-center gap-2 uppercase tracking-wide">
+                        <FaFileAlt className="text-cyan-400" /> Decrypted Ledger Metadata
                       </h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Name:</span>
-                          <span>{extractedData.name || 'N/A'}</span>
+                      <div className="space-y-2.5 text-xs text-slate-300">
+                        <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                          <span className="text-slate-500">IDENTIFIER NAME:</span>
+                          <span className="font-semibold text-white">{extractedData.name || 'UNRESOLVED'}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Number:</span>
-                          <span className="font-mono">{extractedData.number || 'N/A'}</span>
+                        <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                          <span className="text-slate-500">REGISTRATION NUM:</span>
+                          <span className="font-mono font-semibold text-cyan-400 tracking-wide">{extractedData.number || 'UNRESOLVED'}</span>
                         </div>
                         {extractedData.dob && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">DOB:</span>
-                            <span>{extractedData.dob}</span>
+                          <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                            <span className="text-slate-500">TEMPORAL ORB BIRTH:</span>
+                            <span className="font-semibold text-white">{extractedData.dob}</span>
                           </div>
                         )}
                       </div>
@@ -402,32 +424,32 @@ export default function EnhancedKyc() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="glass p-6 mt-8"
+            className="glass-card p-6 mt-8 border border-cyan-500/20 glow-cyan font-mono bg-slate-900/40"
           >
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <FaShieldVirus className="text-success" />
-              KYC Verification Complete
+            <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wider">
+              <FaShieldVirus className="text-cyan-400 text-lg" />
+              All Biometric Signatures Verified
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-success/10 rounded-lg p-4 text-center">
-                <FaCheck className="text-success text-2xl mb-2 mx-auto" />
-                <p className="font-medium">Aadhaar</p>
-                <p className="text-sm text-gray-400">Verified</p>
+              <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4 text-center">
+                <FaCheck className="text-cyan-400 text-xl mb-2 mx-auto" />
+                <p className="font-semibold text-white text-xs uppercase">Aadhaar</p>
+                <p className="text-[9px] text-slate-500 mt-0.5">COMPLETED</p>
               </div>
-              <div className="bg-success/10 rounded-lg p-4 text-center">
-                <FaCheck className="text-success text-2xl mb-2 mx-auto" />
-                <p className="font-medium">PAN</p>
-                <p className="text-sm text-gray-400">Verified</p>
+              <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4 text-center">
+                <FaCheck className="text-cyan-400 text-xl mb-2 mx-auto" />
+                <p className="font-semibold text-white text-xs uppercase">PAN</p>
+                <p className="text-[9px] text-slate-500 mt-0.5">COMPLETED</p>
               </div>
-              <div className="bg-success/10 rounded-lg p-4 text-center">
-                <FaCheck className="text-success text-2xl mb-2 mx-auto" />
-                <p className="font-medium">Face</p>
-                <p className="text-sm text-gray-400">Verified</p>
+              <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4 text-center">
+                <FaCheck className="text-cyan-400 text-xl mb-2 mx-auto" />
+                <p className="font-semibold text-white text-xs uppercase">Face</p>
+                <p className="text-[9px] text-slate-500 mt-0.5">COMPLETED</p>
               </div>
-              <div className="bg-success/10 rounded-lg p-4 text-center">
-                <FaCheck className="text-success text-2xl mb-2 mx-auto" />
-                <p className="font-medium">Address</p>
-                <p className="text-sm text-gray-400">Verified</p>
+              <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4 text-center">
+                <FaCheck className="text-cyan-400 text-xl mb-2 mx-auto" />
+                <p className="font-semibold text-white text-xs uppercase">Address</p>
+                <p className="text-[9px] text-slate-500 mt-0.5">COMPLETED</p>
               </div>
             </div>
           </motion.div>
@@ -449,8 +471,8 @@ function DocumentUploader({ documentType, onUpload, loading }) {
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-        dragActive ? 'border-accent-500 bg-accent-500/10' : 'border-white/20'
+      className={`border border-dashed rounded-2xl p-6 text-center transition-all ${
+        dragActive ? 'border-purple-400 bg-purple-500/5 glow-purple' : 'border-white/10 hover:border-white/20 bg-slate-900/10'
       }`}
       onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
       onDragLeave={() => setDragActive(false)}

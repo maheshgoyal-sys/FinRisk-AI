@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaUser, FaMoneyBillWave, FaBriefcase, FaHome, FaPercent, FaCalendar, FaChartLine, FaCheck, FaClock, FaIdCard } from 'react-icons/fa';
+import { FaUser, FaMoneyBillWave, FaBriefcase, FaHome, FaPercent, FaCalendar, FaChartLine, FaCheck, FaClock, FaIdCard, FaTerminal, FaMicrochip } from 'react-icons/fa';
 import api from '../services/api';
 
 export default function LoanApplication() {
@@ -40,67 +40,71 @@ export default function LoanApplication() {
 
   if (checkingKyc) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      <div className="min-h-screen pt-24 flex items-center justify-center relative">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
       </div>
     );
   }
 
   if (!isKycVerified) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-6">
+      <div className="min-h-screen pt-24 pb-12 px-6 relative">
+        <div className="absolute top-1/4 left-10 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-10 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
         <div className="max-w-2xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass p-8 text-center"
+            className="glass-card p-8 text-center border border-purple-500/20 glow-purple"
           >
-            <div className="w-20 h-20 rounded-full bg-warning/20 flex items-center justify-center mx-auto mb-6">
-              <FaClock className="text-4xl text-warning" />
+            <div className="w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+              <FaClock className="text-4xl text-purple-400 animate-pulse" />
             </div>
-            <h2 className="text-2xl font-bold mb-4">KYC Verification Required</h2>
-            <p className="text-gray-400 mb-6">
-              You must complete and get your documents verified by admin before applying for a loan.
+            <h2 className="text-2xl font-black mb-3 text-white tracking-wide">KYC Protocol Verification Required</h2>
+            <p className="text-slate-400 mb-8 font-light text-sm">
+              Your security ledger is unverified. You must complete document upload and receive administrator clearance before deploying credit requests.
             </p>
 
             {/* Document Status */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
-                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
-                <p className="text-sm">Aadhaar Card</p>
-                <p className={`text-xs ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
-                  {kycStatus?.kycVerification?.aadhaarStatus || 'Not Submitted'}
+            <div className="grid grid-cols-2 gap-4 mb-8 text-left font-mono">
+              <div className={`p-4 rounded-xl border transition-all ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'bg-slate-900/40 border-slate-800 text-slate-500'}`}>
+                <FaIdCard className={`text-lg mb-2 ${kycStatus?.kycVerification?.aadhaarStatus === 'VERIFIED' ? 'text-cyan-400' : 'text-slate-600'}`} />
+                <p className="text-xs font-semibold text-white">Aadhaar Card</p>
+                <p className="text-[10px] mt-1 tracking-wider">
+                  STATUS: {kycStatus?.kycVerification?.aadhaarStatus || 'UNRESOLVED'}
                 </p>
               </div>
-              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
-                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
-                <p className="text-sm">PAN Card</p>
-                <p className={`text-xs ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
-                  {kycStatus?.kycVerification?.panStatus || 'Not Submitted'}
+              <div className={`p-4 rounded-xl border transition-all ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'bg-slate-900/40 border-slate-800 text-slate-500'}`}>
+                <FaIdCard className={`text-lg mb-2 ${kycStatus?.kycVerification?.panStatus === 'VERIFIED' ? 'text-cyan-400' : 'text-slate-600'}`} />
+                <p className="text-xs font-semibold text-white">PAN Card</p>
+                <p className="text-[10px] mt-1 tracking-wider">
+                  STATUS: {kycStatus?.kycVerification?.panStatus || 'UNRESOLVED'}
                 </p>
               </div>
-              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
-                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
-                <p className="text-sm">Address Proof</p>
-                <p className={`text-xs ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
-                  {kycStatus?.kycVerification?.addressStatus || 'Not Submitted'}
+              <div className={`p-4 rounded-xl border transition-all ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'bg-slate-900/40 border-slate-800 text-slate-500'}`}>
+                <FaIdCard className={`text-lg mb-2 ${kycStatus?.kycVerification?.addressStatus === 'VERIFIED' ? 'text-cyan-400' : 'text-slate-600'}`} />
+                <p className="text-xs font-semibold text-white">Address Proof</p>
+                <p className="text-[10px] mt-1 tracking-wider">
+                  STATUS: {kycStatus?.kycVerification?.addressStatus || 'UNRESOLVED'}
                 </p>
               </div>
-              <div className={`p-4 rounded-lg ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'bg-success/10 border border-success/30' : 'bg-gray-800/50'}`}>
-                <FaIdCard className={`mx-auto mb-2 ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`} />
-                <p className="text-sm">Profile Photo</p>
-                <p className={`text-xs ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'text-success' : 'text-gray-500'}`}>
-                  {kycStatus?.kycVerification?.photoStatus || 'Not Submitted'}
+              <div className={`p-4 rounded-xl border transition-all ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'bg-slate-900/40 border-slate-800 text-slate-500'}`}>
+                <FaIdCard className={`text-lg mb-2 ${kycStatus?.kycVerification?.photoStatus === 'VERIFIED' ? 'text-cyan-400' : 'text-slate-600'}`} />
+                <p className="text-xs font-semibold text-white">Profile Photo</p>
+                <p className="text-[10px] mt-1 tracking-wider">
+                  STATUS: {kycStatus?.kycVerification?.photoStatus || 'UNRESOLVED'}
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 justify-center">
-              <Link to="/kyc" className="btn-primary flex items-center gap-2">
-                <FaUser /> Upload Documents
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/kyc" className="btn-primary flex items-center justify-center gap-2">
+                <FaUser /> Initialize KYC Docs
               </Link>
-              <Link to="/dashboard" className="btn-secondary">
-                Go to Dashboard
+              <Link to="/dashboard" className="btn-secondary flex items-center justify-center">
+                Abort and Dashboard
               </Link>
             </div>
           </motion.div>
@@ -152,15 +156,23 @@ export default function LoanApplication() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-6">
+    <div className="min-h-screen pt-24 pb-12 px-6 relative overflow-hidden">
+      {/* Decorative Orbs */}
+      <div className="absolute top-1/4 left-10 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-10 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl font-bold mb-2">Loan Application</h1>
-          <p className="text-gray-400">Fill in your details to get instant loan approval</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm shadow-[0_0_10px_rgba(6,182,212,0.2)] mb-4">
+            <FaTerminal className="text-cyan-400 text-xs" />
+            <span className="text-cyan-300 text-[10px] font-mono tracking-widest uppercase">Secured Application Tunnel</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-black mb-2 text-white">Initialize Credit Request</h1>
+          <p className="text-slate-400 font-light">Input telemetry variables for real-time quantum assessment</p>
         </motion.div>
 
         <motion.form
@@ -168,14 +180,14 @@ export default function LoanApplication() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           onSubmit={handleSubmit}
-          className="glass p-8"
+          className="glass-card p-8 border border-purple-500/10 glow-purple"
         >
           <div className="space-y-6">
             {/* Income & EMI */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaMoneyBillWave className="inline mr-2" /> Monthly Income (₹) *
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaMoneyBillWave className="inline mr-2 text-purple-400" /> Monthly Income (INR) *
                 </label>
                 <input
                   type="number"
@@ -187,15 +199,15 @@ export default function LoanApplication() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaPercent className="inline mr-2" /> Existing EMI (₹)
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaPercent className="inline mr-2 text-purple-400" /> Existing EMI (INR)
                 </label>
                 <input
                   type="number"
                   value={formData.existingEmi}
                   onChange={(e) => handleChange('existingEmi', e.target.value)}
                   className="input-field"
-                  placeholder="Monthly EMI payments"
+                  placeholder="Monthly EMI obligations"
                 />
               </div>
             </div>
@@ -203,26 +215,26 @@ export default function LoanApplication() {
             {/* Loan Type & Property Value */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaHome className="inline mr-2" /> Loan Type *
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaMicrochip className="inline mr-2 text-cyan-400" /> Loan Classification *
                 </label>
                 <select
                   value={formData.loanType}
                   onChange={(e) => handleChange('loanType', e.target.value)}
-                  className="input-field"
+                  className="input-field bg-[#030014] text-white border-white/10"
                   required
                 >
-                  <option value="">Select loan type</option>
-                  <option value="PERSONAL">Personal Loan</option>
-                  <option value="HOME">Home Loan</option>
-                  <option value="BUSINESS">Business Loan</option>
-                  <option value="VEHICLE">Vehicle Loan</option>
-                  <option value="EDUCATION">Education Loan</option>
+                  <option value="">Select allocation type</option>
+                  <option value="PERSONAL">Personal Allocation</option>
+                  <option value="HOME">Mortgage Allocation</option>
+                  <option value="BUSINESS">Commercial Allocation</option>
+                  <option value="VEHICLE">Asset/Vehicle Allocation</option>
+                  <option value="EDUCATION">Academic Allocation</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaHome className="inline mr-2" /> Property Value (₹)
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaHome className="inline mr-2 text-cyan-400" /> Real Estate Assets (INR)
                 </label>
                 <input
                   type="number"
@@ -235,9 +247,10 @@ export default function LoanApplication() {
             </div>
 
             {/* Loan Amount Slider */}
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-300">
-                Loan Amount: ₹{Number(formData.loanAmount).toLocaleString()}
+            <div className="bg-white/[0.01] border border-white/5 p-5 rounded-2xl">
+              <label className="block text-xs font-mono tracking-wider mb-3 text-slate-300 uppercase flex justify-between">
+                <span>Requested Capital Allocation:</span>
+                <span className="text-cyan-400 font-bold">₹{Number(formData.loanAmount).toLocaleString()}</span>
               </label>
               <input
                 type="range"
@@ -246,9 +259,9 @@ export default function LoanApplication() {
                 step="10000"
                 value={formData.loanAmount}
                 onChange={(e) => handleChange('loanAmount', Number(e.target.value))}
-                className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-1 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
-              <div className="flex justify-between text-sm text-gray-400 mt-2">
+              <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-2 tracking-wider">
                 <span>₹10,000</span>
                 <span>₹50,00,000</span>
               </div>
@@ -257,30 +270,30 @@ export default function LoanApplication() {
             {/* Employment Type & Tenure */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaBriefcase className="inline mr-2" /> Employment Type *
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaBriefcase className="inline mr-2 text-pink-400" /> Professional Status *
                 </label>
                 <select
                   value={formData.employmentType}
                   onChange={(e) => handleChange('employmentType', e.target.value)}
-                  className="input-field"
+                  className="input-field bg-[#030014] text-white border-white/10"
                   required
                 >
-                  <option value="">Select employment type</option>
-                  <option value="SALARIED">Salaried</option>
-                  <option value="SELF_EMPLOYED">Self-Employed</option>
-                  <option value="BUSINESS">Business Owner</option>
-                  <option value="FREELANCER">Freelancer</option>
+                  <option value="">Select sector</option>
+                  <option value="SALARIED">Salaried Node</option>
+                  <option value="SELF_EMPLOYED">Independent Contractor</option>
+                  <option value="BUSINESS">Corporate Entity</option>
+                  <option value="FREELANCER">Autonomous Freelancer</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  <FaCalendar className="inline mr-2" /> Tenure (months) *
+                <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                  <FaCalendar className="inline mr-2 text-pink-400" /> Maturity Duration *
                 </label>
                 <select
                   value={formData.tenure}
                   onChange={(e) => handleChange('tenure', e.target.value)}
-                  className="input-field"
+                  className="input-field bg-[#030014] text-white border-white/10"
                   required
                 >
                   <option value="6">6 months</option>
@@ -296,15 +309,15 @@ export default function LoanApplication() {
 
             {/* Credit Score (Optional) */}
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-300">
-                <FaChartLine className="inline mr-2" /> Credit Score (Optional)
+              <label className="block text-xs font-mono tracking-wider mb-2 text-slate-400 uppercase">
+                <FaChartLine className="inline mr-2 text-purple-400" /> Bureau Trust Rating (CIBIL - Optional)
               </label>
               <input
                 type="number"
                 value={formData.creditScore}
                 onChange={(e) => handleChange('creditScore', e.target.value)}
                 className="input-field"
-                placeholder="300-900 (CIBIL Score)"
+                placeholder="300-900 (Score)"
                 min="300"
                 max="900"
               />
@@ -314,16 +327,16 @@ export default function LoanApplication() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-4 text-lg font-semibold flex items-center justify-center gap-2"
+              className="w-full btn-primary py-4 text-base font-bold flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-transparent transition-all tracking-wider uppercase font-mono mt-8"
             >
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                  Processing...
+                  Initializing Prediction Sequence...
                 </>
               ) : (
                 <>
-                  <FaCheck /> Submit Application
+                  <FaCheck /> Submit Application Protocol
                 </>
               )}
             </button>

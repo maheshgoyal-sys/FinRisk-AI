@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash, FaCheck, FaTimes, FaCrown } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash, FaCheck, FaTimes, FaUserShield, FaFingerprint } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
@@ -30,9 +30,9 @@ export default function Register() {
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
-  const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-green-500', 'bg-green-500'];
-  const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
-  const strengthColor = passwordStrength <= 1 ? 'text-red-400' : passwordStrength <= 2 ? 'text-orange-400' : passwordStrength <= 3 ? 'text-yellow-400' : 'text-green-400';
+  const strengthColors = ['bg-red-500/50', 'bg-orange-500/50', 'bg-yellow-500/50', 'bg-cyan-500/50', 'bg-purple-500/50', 'bg-purple-500'];
+  const strengthLabels = ['Critical Vulnerability', 'Vulnerable', 'Weak Firewall', 'Secured', 'Highly Cryptographic', 'Quantum Encrypted'];
+  const strengthColor = passwordStrength <= 1 ? 'text-red-400' : passwordStrength <= 2 ? 'text-orange-400' : passwordStrength <= 3 ? 'text-yellow-400' : 'text-purple-400';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -70,100 +70,97 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center pt-20 px-4 py-12 relative">
-      {/* Premium Background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[#0a0a0a]"></div>
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-gradient-radial from-amber-500/5 via-transparent to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-gradient-radial from-indigo-500/5 via-transparent to-transparent rounded-full blur-3xl"></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center pt-20 px-4 py-12 relative overflow-hidden">
+      {/* Decorative Cyber Orbs */}
+      <div className="absolute top-1/4 right-10 w-80 h-80 bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 left-10 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="glass p-10 premium-shine">
+        <div className="glass-card p-10 glow-cyan border border-cyan-500/20">
           <div className="text-center mb-10">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/20">
-              <FaCrown className="text-black text-2xl" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-cyan-500/20 border border-cyan-400/30">
+              <FaUserShield className="text-white text-2xl" />
             </div>
-            <h1 className="text-3xl font-bold mb-2">Create <span className="gradient-text">Account</span></h1>
-            <p className="text-gray-400">Join the elite circle of FinRisk members</p>
+            <h1 className="text-3xl font-bold mb-2 tracking-wide text-white">Deploy <span className="gradient-text">Node</span></h1>
+            <p className="text-slate-400 text-sm">Join the FinRisk decentralized trust network</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                {error}
+              <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-mono">
+                [ERROR] {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-300">Full Name</label>
+              <label className="block text-xs font-semibold mb-3 text-slate-400 uppercase tracking-widest font-mono">Identifier (Full Name)</label>
               <div className="relative">
-                <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
                   className="input-field pl-12"
-                  placeholder="Enter your full name"
+                  placeholder="John Doe"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-300">Email Address</label>
+              <label className="block text-xs font-semibold mb-3 text-slate-400 uppercase tracking-widest font-mono">Communication Endpoint (Email)</label>
               <div className="relative">
-                <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   className="input-field pl-12"
-                  placeholder="Enter your email"
+                  placeholder="name@domain.com"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-300">Phone Number</label>
+              <label className="block text-xs font-semibold mb-3 text-slate-400 uppercase tracking-widest font-mono">Secure Dial (Phone)</label>
               <div className="relative">
-                <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   className="input-field pl-12"
-                  placeholder="Enter your phone number"
+                  placeholder="+1 (555) 000-0000"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-300">Password</label>
+              <label className="block text-xs font-semibold mb-3 text-slate-400 uppercase tracking-widest font-mono">Encryption Phrase (Password)</label>
               <div className="relative">
-                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   className="input-field pl-12 pr-12"
-                  placeholder="Create a strong password"
+                  placeholder="Create cryptographic key"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-amber-400 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -174,34 +171,34 @@ export default function Register() {
                     {[...Array(5)].map((_, i) => (
                       <div
                         key={i}
-                        className={`h-1.5 flex-1 rounded-full transition-colors ${i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-white/10'}`}
+                        className={`h-1 flex-1 rounded-full transition-all duration-300 ${i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-slate-800'}`}
                       ></div>
                     ))}
                   </div>
-                  <span className={`text-xs ${strengthColor}`}>
-                    {strengthLabels[passwordStrength]}
+                  <span className={`text-xs font-mono tracking-wider ${strengthColor}`}>
+                    [{strengthLabels[passwordStrength]}]
                   </span>
                 </div>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-300">Confirm Password</label>
+              <label className="block text-xs font-semibold mb-3 text-slate-400 uppercase tracking-widest font-mono">Re-verify Phrase</label>
               <div className="relative">
-                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="input-field pl-12"
-                  placeholder="Confirm your password"
+                  placeholder="Repeat encryption key"
                   required
                 />
                 {formData.confirmPassword && (
                   <span className="absolute right-4 top-1/2 -translate-y-1/2">
                     {formData.password === formData.confirmPassword ? (
-                      <FaCheck className="text-green-400" />
+                      <FaCheck className="text-emerald-400" />
                     ) : (
                       <FaTimes className="text-red-400" />
                     )}
@@ -210,18 +207,18 @@ export default function Register() {
               </div>
             </div>
 
-            <label className="flex items-start gap-3 cursor-pointer mt-2">
+            <label className="flex items-start gap-3 cursor-pointer mt-2 font-mono text-[11px] leading-relaxed">
               <input
                 type="checkbox"
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded bg-white/5 border-white/10 text-amber-500 focus:ring-amber-500/30"
+                className="mt-0.5 w-4 h-4 rounded bg-slate-950 border-slate-800 text-cyan-600 focus:ring-cyan-500/30"
               />
-              <span className="text-sm text-gray-400">
-                I agree to the{' '}
-                <a href="#" className="text-amber-400 hover:text-amber-300">Terms of Service</a>
+              <span className="text-slate-400">
+                I authorize this node configuration under the{' '}
+                <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">Service Protocol</a>
                 {' '}and{' '}
-                <a href="#" className="text-amber-400 hover:text-amber-300">Privacy Policy</a>
+                <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">Privacy Shield</a>
               </span>
             </label>
 
@@ -231,24 +228,24 @@ export default function Register() {
               className="btn-primary w-full py-4 text-base mt-4"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
+                <span className="flex items-center justify-center gap-2 font-mono">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Creating account...
+                  DEPLOYING NODE...
                 </span>
               ) : (
-                'Create Account'
+                'Deploy Node Configuration'
               )}
             </button>
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-gray-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-amber-400 hover:text-amber-300 font-medium">
-                Sign in
+            <p className="text-slate-400 text-sm">
+              Node already configured?{' '}
+              <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                Authorize login
               </Link>
             </p>
           </div>
